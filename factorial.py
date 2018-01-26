@@ -5,6 +5,7 @@ import sys
 def factorial(n):
     """
     Calculate n!
+
     :param n: int, argument to factorial
     :return: string with roughly answer
     """
