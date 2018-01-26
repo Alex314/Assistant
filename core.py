@@ -5,14 +5,29 @@ from queue import Empty
 import importlib.util
 
 
-def f(i, qu):
-    spec = importlib.util.spec_from_file_location("factorial",
-                                                  r'C:\Users\Alex\Downloads\transp\Programming\PythonProjects\Assistant\factorial.py')
-    foo = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(foo)
+def process_query(query, out_queue):
+    if query in ['exit', 'close', 'выход', 'выйти', 'закрыть']:
+        print('exit')
+        children = active_children()
+        print(children)
+        for ch in children:
+            ch.terminate()
+            print(ch)
+        return 0
+    elif query.isnumeric():
+        Process(target=run_function, args=(
+                out_queue, r'factorial.py',
+                'factorial', *(int(query), ))).start()
+    return 1
 
-    ans = getattr(foo, 'factorial')(i)
-    qu.put([i, ans])
+
+def run_function(out_queue, path, function_name, *args):
+    spec = importlib.util.spec_from_file_location(function_name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    ans = getattr(module, function_name)(*args)
+    out_queue.put(ans)
 
 
 def window_input(qin, qout):
@@ -21,28 +36,19 @@ def window_input(qin, qout):
     root.mainloop()
 
 
-def main_loop(comp, inp, outp, pp):
+def main_loop(comp, inp, outp):
     while True:
         try:
             while True:
                 s = comp.get(block=False)
-                outp.put(s[1])
+                outp.put(s)
         except Empty:
             pass
         try:
             while True:
                 s = inp.get(block=False)
-                if s in ['exit', 'close', 'выход', 'выйти', 'закрыть']:
-                    print('exit')
-                    children = active_children()
-                    print(children)
-                    for ch in children:
-                        ch.terminate()
-                        print(ch)
+                if not process_query(s, comp):
                     return 0
-                elif s.isnumeric():
-                    pp += [(Process(target=f, args=(int(s), comp)), int(s))]
-                    pp[-1][0].start()
         except Empty:
             pass
 
@@ -54,5 +60,4 @@ if __name__ == '__main__':
     outp = Queue()
     input_proc = Process(target=window_input, args=(inp, outp), name='GUI')
     input_proc.start()
-    pp = []
-    main_loop(comp, inp, outp, pp)
+    main_loop(comp, inp, outp)
