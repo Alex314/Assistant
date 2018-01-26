@@ -2,20 +2,17 @@ from multiprocessing import Process, Queue, active_children
 from main_window import MainWindow
 import tkinter
 from queue import Empty
-import subprocess
+import importlib.util
 
 
 def f(i, qu):
-    try:
-        result = subprocess.run(
-            ['python', 'factorial.py', str(i)],
-            stdout=subprocess.PIPE)
-        ans = [i, result.stdout.decode('utf-8').rstrip()]
-        qu.put(ans)
-    except Exception as e:
-        pass
-        #print('Ouch, Exception:')
-        #print(e.args)
+    spec = importlib.util.spec_from_file_location("factorial",
+                                                  r'C:\Users\Alex\Downloads\transp\Programming\PythonProjects\Assistant\factorial.py')
+    foo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(foo)
+
+    ans = getattr(foo, 'factorial')(i)
+    qu.put([i, ans])
 
 
 def window_input(qin, qout):
