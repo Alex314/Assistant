@@ -6,6 +6,9 @@ __pycache__/
 #.idea
 .idea/
 
+#ATest
+*Test.py
+
 # C extensions
 *.so
 
