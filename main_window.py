@@ -12,6 +12,7 @@ class MainWindow:
         master.protocol("WM_DELETE_WINDOW", self.on_exit)
         self.text = tkinter.Text(master)
         self.field = tkinter.Entry(master)
+        self.field.bind("<Return>", lambda x: self.press())
         self.but = tkinter.Button(master, command=self.press, text='!', width=4)
         self.text.grid(row=0, columnspan=2, sticky='NSWE')
         self.master.grid_columnconfigure(0, weight=1)
