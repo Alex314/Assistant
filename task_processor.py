@@ -39,12 +39,9 @@ class TaskProcessor:
 
     def process_query(self, query):
         if query in ['exit', 'close', 'выход', 'выйти', 'закрыть']:
-            print('exit')
             children = active_children()
-            print(children)
             for ch in children:
                 ch.terminate()
-                print(ch)
             return 0
         else:
             for t in self.possible_tasks:

@@ -1,16 +1,27 @@
 import os
 
 
+def find_link(path):
+    files = []
+    paths = []
+    tree = os.walk(path)
+    for path, folders, fl in tree:
+        for f in fl:
+            if f.endswith('.lnk'):
+                yield f[:-4], os.path.join(path, f)
+
+
 def get_programs(*, extended=False):
     program_names = []
     paths = []
-    tree = os.walk(r'C:\ProgramData\Microsoft\Windows\Start Menu')
-    for path, folders, files in tree:
-        for i in files:
-            if i.endswith('.lnk'):
-                program_names += [i[:-4]]
-                if extended:
-                    paths += [os.path.join(path, i)]
+    links = [r'C:\ProgramData\Microsoft\Windows\Start Menu',
+             r'C:\Users\Public\Desktop',
+             os.path.join(os.environ["HOMEPATH"], "Desktop")]
+    for link in links:
+        for n, p in find_link(link):
+            if n not in program_names:
+                program_names += [n]
+                paths += [p]
     if len(program_names) == 0:
         return "Не могу найти установленных програм"
     if extended:
@@ -51,4 +62,4 @@ if __name__ == '__main__':
         for f in programs:
             print(f)
     print()
-    print(run_program('excel 2013'))
+    print(run_program('py'))
