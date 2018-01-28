@@ -37,7 +37,7 @@ class MainWindow:
         try:
             while True:
                 s = self.qout.get(block=False)
-                self.text.insert(tkinter.END, s + '\n')
+                self.text.insert(tkinter.END, s.__str__() + '\n')
                 self.text.see(tkinter.END)
         except Empty:
             pass

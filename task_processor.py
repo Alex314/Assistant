@@ -1,7 +1,7 @@
 from multiprocessing import Process, Queue, active_children
 from queue import Empty
 import importlib.util
-from task import get_fact_task
+from task import basic_tasks
 
 
 def run_function(out_queue, path, function_name, *args):
@@ -19,7 +19,7 @@ class TaskProcessor:
         self.q_out = q_out
         # self.processes = []
         self.comp = Queue()
-        self.possible_tasks = [get_fact_task()]
+        self.possible_tasks = basic_tasks()
 
     def run(self):
         while True:
