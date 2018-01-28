@@ -20,7 +20,7 @@ def eval_factorial(regex, s_input):
 def basic_tasks():
     bt = []
     bt += [Task(r'(\d+)!', 'factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s))]  # Factorial
-    bt += [Task(r'[Сс]писок програм|([Ii]nstalled )?[Pp]rograms', 'os_basic.py', 'get_programs', lambda s: tuple())]
+    bt += [Task(r'[Сс]писок программ|([Ii]nstalled )?[Pp]rograms', 'os_basic.py', 'get_programs', lambda s: tuple())]
     bt += [Task(r'([Зз]апусти(ть)?|[Rr]un) (.*)', 'os_basic.py', 'run_program',
                 lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],))]
     return bt
