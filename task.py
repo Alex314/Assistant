@@ -27,6 +27,8 @@ def basic_tasks():
                 lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],), "Запустить Wordpad")]
     bt += [Task(r'[Сс]писок команд|[Кк]оманды|[Cc]omands|[Cc]omand[s] list',
                 'core_functions.py', 'get_command_list', lambda s: tuple(), 'Команды')]
+    bt += [Task(r'[Сс]писок процессов|[Пп]роцессы|[Pp]rocess(es)?( list)?',
+                'core_functions.py', 'get_active_processes', lambda s: tuple(), 'Процессы')]
 
     return bt
 

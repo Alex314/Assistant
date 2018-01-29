@@ -48,6 +48,7 @@ class MainWindow:
         if type(arg) is type(list()):
             for i in arg:
                 self.present(i)
+            self.present('')
         else:
             self.text.insert(tkinter.END, arg.__str__() + '\n')
 
