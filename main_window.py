@@ -37,9 +37,17 @@ class MainWindow:
         try:
             while True:
                 s = self.qout.get(block=False)
-                self.text.insert(tkinter.END, s.__str__() + '\n')
+                self.present(s)
                 self.text.see(tkinter.END)
         except Empty:
             pass
         finally:
             self.master.after(10, self.upd_output)
+
+    def present(self, arg):
+        if type(arg) is type(list()):
+            for i in arg:
+                self.present(i)
+        else:
+            self.text.insert(tkinter.END, arg.__str__() + '\n')
+

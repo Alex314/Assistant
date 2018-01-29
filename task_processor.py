@@ -10,7 +10,16 @@ def run_function(out_queue, path, function_name, *args):
     spec.loader.exec_module(module)
 
     ans = getattr(module, function_name)(*args)
-    out_queue.put(ans)
+    if str(type(ans)) == '<class \'generator\'>':
+        out_queue.put('generator output from {0}'.format(function_name))
+        for a in ans:
+            put_to_gui(out_queue, a)
+    else:
+        put_to_gui(out_queue, ans)
+
+
+def put_to_gui(queue, arg):
+    queue.put(arg)
 
 
 class TaskProcessor:
@@ -26,7 +35,13 @@ class TaskProcessor:
             try:
                 while True:
                     s = self.comp.get(block=False)
-                    self.q_out.put(s)
+                    try:
+                        if len(s) == 2 and s[0] == 'exec':
+                            exec(s[1])
+                        else:
+                            self.q_out.put(s)
+                    except TypeError:
+                        self.q_out.put(s)
             except Empty:
                 pass
             try:

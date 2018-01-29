@@ -2,8 +2,6 @@ import os
 
 
 def find_link(path):
-    files = []
-    paths = []
     tree = os.walk(path)
     for path, folders, fl in tree:
         for f in fl:
