@@ -1,5 +1,5 @@
 # Assistant
-PC-assistant
+Programmable PC-assistant
 
 ### Features:
   * parallel tasks execution
