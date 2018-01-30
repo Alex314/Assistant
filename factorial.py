@@ -10,7 +10,7 @@ def factorial(n):
     :return: string with roughly answer
     """
     string_f = str(f(n))
-    ans = str(n) + '!=' + (string_f[:20] + '...' if len(string_f) > 20 else string_f)
+    ans = str(n) + '!=' + (string_f[:20] + '*10^' + str(len(string_f) - 20) if len(string_f) > 20 else string_f)
     return ans
 
 
