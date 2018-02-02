@@ -29,6 +29,10 @@ def basic_tasks():
                 'core_functions.py', 'get_command_list', lambda s: tuple(), 'Команды')]
     bt += [Task(r'[Сс]писок процессов|[Пп]роцессы|[Pp]rocess(es)?( list)?',
                 'core_functions.py', 'get_active_processes', lambda s: tuple(), 'Процессы')]
+    bt += [Task(r'([Оо]становить процесс|([Tt]erminate|[Kk]ill)( [Pp]rocess)?) (.*)',
+                'core_functions.py', 'terminate_process_by_name',
+                lambda s: (re.fullmatch(r'([Оо]становить процесс|([Tt]erminate|[Kk]ill)( [Pp]rocess)?) (.*)', s).groups()[3],),
+                'Остановить процесс GUI')]
 
     return bt
 

@@ -4,3 +4,16 @@ def get_command_list():
 
 def get_active_processes():
     return 'exec', 'self.q_out.put(["Active processes:"] + [pr.name for pr in active_children()])'
+
+
+def terminate_process_by_name(name):
+    return 'exec', '''
+for p in active_children():
+    if p.name == '{0}':
+        self.q_out.put('Terminate ' + p.name)
+        p.terminate()
+'''.format(name)
+
+
+if __name__ == '__main__':
+    print(terminate_process_by_name('Pr'))
