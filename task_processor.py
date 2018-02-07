@@ -2,6 +2,7 @@ from multiprocessing import Process, Queue, active_children
 from queue import Empty
 import importlib.util
 from task import basic_tasks
+from time import sleep
 
 
 def run_function(out_queue, path, function_name, *args):
@@ -59,6 +60,7 @@ class TaskProcessor:
                     self.process_query(query)
             except Empty:
                 pass
+            sleep(0.01)
 
     def process_query(self, query):
         for t in self.possible_tasks:
