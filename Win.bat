@@ -1,1 +1,1 @@
-python core.py
+start pythonw core.py
