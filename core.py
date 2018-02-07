@@ -10,7 +10,7 @@ def window_input(q_in, q_out):
     root.mainloop()
 
 
-if __name__ == '__main__':
+def run():
     comp = Queue()
     comp.cancel_join_thread()
     inp = Queue()
@@ -18,3 +18,7 @@ if __name__ == '__main__':
     input_proc = Process(target=window_input, args=(inp, outp), name='GUI')
     input_proc.start()
     TaskProcessor(inp, outp).run()
+
+
+if __name__ == '__main__':
+    run()

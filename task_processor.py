@@ -30,10 +30,19 @@ class TaskProcessor:
         self.comp = Queue()
         self.possible_tasks = basic_tasks()
 
+        # Flag for closing
+        self.active = True
+
+    def terminate(self):
+        children = active_children()
+        for ch in children:
+            ch.terminate()
+        self.active = False
+
     def run(self):
-        while True:
+        while self.active:
             try:
-                while True:
+                while self.active:
                     s = self.comp.get(block=False)
                     try:
                         if len(s) == 2 and s[0] == 'exec':
@@ -45,22 +54,14 @@ class TaskProcessor:
             except Empty:
                 pass
             try:
-                while True:
+                while self.active:
                     query = self.q_in.get(block=False)
-                    if not self.process_query(query):
-                        return 0
+                    self.process_query(query)
             except Empty:
                 pass
 
     def process_query(self, query):
-        if query in ['exit', 'close', 'выход', 'выйти', 'закрыть']:
-            children = active_children()
-            for ch in children:
-                ch.terminate()
-            return 0
-        else:
-            for t in self.possible_tasks:
-                if t.fit(query):
-                    Process(target=run_function, args=(self.comp, t.file, t.func_name, *t.eval_p(query)), name=query).start()
-                    break
-        return 1
+        for t in self.possible_tasks:
+            if t.fit(query):
+                Process(target=run_function, args=(self.comp, t.file, t.func_name, *t.eval_p(query)), name=query).start()
+                break

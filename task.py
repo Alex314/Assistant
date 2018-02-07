@@ -20,11 +20,11 @@ def eval_factorial(regex, s_input):
 
 def basic_tasks():
     bt = []
-    bt += [Task(r'(\d+)!', 'factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s), '16!')]  # Factorial
+    bt += [Task(r'(\d+)!', 'factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s), '{int>=0}!')]  # Factorial
     bt += [Task(r'[Сс]писок программ|([Ii]nstalled )?[Pp]rograms', 'os_basic.py', 'get_programs', lambda s: tuple(),
                 'Список программ')]
     bt += [Task(r'([Зз]апусти(ть)?|[Rr]un) (.*)', 'os_basic.py', 'run_program',
-                lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],), "Запустить Wordpad")]
+                lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],), "Запустить {}")]
     bt += [Task(r'[Сс]писок команд|[Кк]оманды|[Cc]omands|[Cc]omand[s] list',
                 'core_functions.py', 'get_command_list', lambda s: tuple(), 'Команды')]
     bt += [Task(r'[Сс]писок процессов|[Пп]роцессы|[Pp]rocess(es)?( list)?',
@@ -32,13 +32,17 @@ def basic_tasks():
     bt += [Task(r'([Оо]становить процесс|([Tt]erminate|[Kk]ill)( [Pp]rocess)?) (.*)',
                 'core_functions.py', 'terminate_process_by_name',
                 lambda s: (re.fullmatch(r'([Оо]становить процесс|([Tt]erminate|[Kk]ill)( [Pp]rocess)?) (.*)', s).groups()[3],),
-                'Остановить процесс GUI')]
+                'Остановить процесс {}')]
+    bt += [Task(r'[Пп]ерезапус(к|тить)|[Rr]estart',
+                'core_functions.py', 'restart', lambda s: tuple(), 'Перезапуск')]
+    bt += [Task('[Ee]xit|[Cc]lose|[Вв]ыход|[Вв]ыйти|[Зз]акрыть',
+                'core_functions.py', 'close_app', lambda s: tuple(), 'Выход')]
 
     return bt
 
 
 if __name__ == '__main__':
-    f = Task(r'(\d+)!', 'factorial.py', 'factorial', lambda s: eval_factorial(f.regex, s))
+    f = Task(r'(\d+)!', 'factorial.py', 'factorial', lambda s: eval_factorial(f.regex, s), '2!')
     inp = ['123!', '0!', '-1!', 'a', '!', '14! + 15!']
     for i in inp:
         match = re.fullmatch(f.regex, i)

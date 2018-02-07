@@ -1,3 +1,6 @@
+import os
+
+
 def get_command_list():
     return 'exec', 'self.q_out.put([t.example for t in self.possible_tasks])'
 
@@ -13,6 +16,16 @@ for p in active_children():
         self.q_out.put('Terminate ' + p.name)
         p.terminate()
 '''.format(name)
+
+
+def restart():
+    os.startfile('Win.bat')
+    return 'exec', '''
+self.terminate()'''
+
+def close_app():
+    return 'exec', '''
+self.terminate()'''
 
 
 if __name__ == '__main__':

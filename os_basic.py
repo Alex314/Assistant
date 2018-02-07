@@ -55,9 +55,8 @@ def run_program(name):
 
 
 if __name__ == '__main__':
-    programs = get_programs()
-    if type(programs) is not str:
-        for f in programs:
-            print(f)
+    print(os.__all__)
+    for i in os.__all__:
+        print(i)
+        print(getattr(os, i))
     print()
-    print(run_program('py'))

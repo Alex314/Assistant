@@ -30,8 +30,6 @@ class MainWindow:
             self.text.insert(tkinter.END, s + '\n')
             self.text.see(tkinter.END)
             self.qin.put(s)
-            if s == 'exit':
-                exit(0)
 
     def upd_output(self):
         try:
