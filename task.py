@@ -20,7 +20,7 @@ def eval_factorial(regex, s_input):
 
 def basic_tasks():
     bt = []
-    bt += [Task(r'(\d+)!', 'Lib/factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s), '{int>=0}!')]  # Factorial
+    bt += [Task(r'(\d+)!', 'Lib/factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s), '{int>=0}!')]
     bt += [Task(r'[Сс]писок программ|([Ii]nstalled )?[Pp]rograms', 'os_basic.py', 'get_programs', lambda s: tuple(),
                 'Список программ')]
     bt += [Task(r'([Зз]апусти(ть)?|[Rr]un) (.*)', 'Lib/os_basic.py', 'run_program',
@@ -37,6 +37,10 @@ def basic_tasks():
                 'Lib/core_functions.py', 'restart', lambda s: tuple(), 'Перезапуск')]
     bt += [Task('[Ee]xit|[Cc]lose|[Вв]ыход|[Вв]ыйти|[Зз]акрыть',
                 'Lib/core_functions.py', 'close_app', lambda s: tuple(), 'Выход')]
+    bt += [Task(r'([Пп]роверять сайт по тексту|[Cc]heck (web)?site by text) (.*)',
+                'Lib/net.py', 'check_text_page',
+                lambda s: (re.fullmatch(r'([Пп]роверять сайт по тексту|[Cc]heck (web)?site by text) (.*)', s).groups()[2],),
+                'Проверять сайт по тексту {}')]
     bt += [Task(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)',
                 'Lib/net.py', 'check_page',
                 lambda s: (re.fullmatch(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)', s).groups()[2],),
