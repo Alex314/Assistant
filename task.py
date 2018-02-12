@@ -37,6 +37,10 @@ def basic_tasks():
                 'Lib/core_functions.py', 'restart', lambda s: tuple(), 'Перезапуск')]
     bt += [Task('[Ee]xit|[Cc]lose|[Вв]ыход|[Вв]ыйти|[Зз]акрыть',
                 'Lib/core_functions.py', 'close_app', lambda s: tuple(), 'Выход')]
+    bt += [Task(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)',
+                'Lib/net.py', 'check_page',
+                lambda s: (re.fullmatch(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)', s).groups()[2],),
+                'Проверять сайт {}')]
 
     return bt
 

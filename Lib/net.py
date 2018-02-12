@@ -1,10 +1,13 @@
 import requests
 import re
 import os
+from time import sleep
+import winsound
 
 
 def save_page(adress, filename=None):
     directory = r'../../Assistant_Archive/'
+    os.makedirs(directory, exist_ok=True)
     if filename is None:
         filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', adress) + '.html')
     with open(filename, 'wb') as fl:
@@ -15,6 +18,8 @@ def compare_page_to_file(adress, filename=None):
     directory = r'../../Assistant_Archive/'
     if filename is None:
         filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', adress) + '.html')
+    if not os.path.exists(filename):
+        return False
     with open(filename, 'rb') as fl:
         return fl.read() == requests.get(adress).content
 
@@ -50,11 +55,22 @@ def parse_links(adress, start_with='', beg=None):
     return ans
 
 
+def check_page(url, wait_sec=5):
+    directory = r'../../Assistant_Archive/'
+    filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', url) + '.html')
+    if not os.path.exists(filename):
+        save_page(url)
+    while True:
+        if not compare_page_to_file(url):
+            yield url + ' changed'
+            winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
+            save_page(url)
+        sleep(wait_sec)
+
+
 if __name__ == '__main__':
     adres = r'http://rozklad.kpi.ua/Schedules/ViewSchedule.aspx?g=f4a70e94-229b-44c9-b777-634a13217f9c'
     adres = r'http://apeps.kpi.ua/'
-    adres = r'http://xtf.kpi.ua/?q=ru'
-    adres = r'http://kfh.kpi.ua/ru/'
     # save_page(r'http://rozklad.kpi.ua/Schedules/ViewSchedule.aspx?g=f4a70e94-229b-44c9-b777-634a13217f9c', 'rozklad2.html')
     r1 = ''
     r2 = ''
@@ -64,8 +80,9 @@ if __name__ == '__main__':
         r2 = f.read()
     print(r1 == r2)'''
     # print('Total pages:', len(walk_site(adres)))
-    a = r'https://www.timeanddate.com/worldclock/ukraine/kyiv'
-    os.makedirs(directory, exist_ok=True)
-    save_page(a)
-    print(compare_page_to_file(a))
+    a = r'https://www.twitch.tv/'
+    #save_page(a)
+    #print(compare_page_to_file(a))
+    for i in check_page(a):
+        print(i)
     print(re.sub(r'[^-\w]+', '_', a) + '.html')
