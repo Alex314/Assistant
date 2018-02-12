@@ -6,7 +6,7 @@ import winsound
 
 
 def save_page(adress, filename=None):
-    directory = r'../../Assistant_Archive/'
+    directory = r'../Assistant_Archive/'
     os.makedirs(directory, exist_ok=True)
     if filename is None:
         filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', adress) + '.html')
@@ -15,13 +15,29 @@ def save_page(adress, filename=None):
 
 
 def compare_page_to_file(adress, filename=None):
-    directory = r'../../Assistant_Archive/'
+    directory = r'../Assistant_Archive/'
     if filename is None:
         filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', adress) + '.html')
     if not os.path.exists(filename):
         return False
     with open(filename, 'rb') as fl:
         return fl.read() == requests.get(adress).content
+
+
+def compare_text_page_to_file(adress, filename=None):
+    directory = r'../Assistant_Archive/'
+    if filename is None:
+        filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', adress) + '.html')
+    if not os.path.exists(filename):
+        return False
+    with open(filename, 'r', encoding='utf-8') as fl:
+        regex = r'<(style|script)[^>]*>.*?</(\1)>|<[^>]*>'
+        old_t = re.sub(regex, ' ', fl.read())
+        new_t = re.sub(regex, ' ', requests.get(adress).text)
+        regex2 = r'\s+'
+        old_t = re.sub(regex2, ' ', old_t)
+        new_t = re.sub(regex2, ' ', new_t)
+        return old_t == new_t
 
 
 def walk_site(adress, beg=None):
@@ -56,12 +72,25 @@ def parse_links(adress, start_with='', beg=None):
 
 
 def check_page(url, wait_sec=5):
-    directory = r'../../Assistant_Archive/'
+    directory = r'../Assistant_Archive/'
     filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', url) + '.html')
     if not os.path.exists(filename):
         save_page(url)
     while True:
         if not compare_page_to_file(url):
+            yield url + ' changed'
+            winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
+            save_page(url)
+        sleep(wait_sec)
+
+
+def check_text_page(url, wait_sec=5):
+    directory = r'../Assistant_Archive/'
+    filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', url) + '.html')
+    if not os.path.exists(filename):
+        save_page(url)
+    while True:
+        if not compare_text_page_to_file(url):
             yield url + ' changed'
             winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
             save_page(url)
@@ -80,9 +109,10 @@ if __name__ == '__main__':
         r2 = f.read()
     print(r1 == r2)'''
     # print('Total pages:', len(walk_site(adres)))
-    a = r'https://www.twitch.tv/'
+    a = r'https://github.com/Alex314/Assistant'
     #save_page(a)
     #print(compare_page_to_file(a))
-    for i in check_page(a):
+    for i in check_text_page(a):
         print(i)
-    print(re.sub(r'[^-\w]+', '_', a) + '.html')
+    compare_text_page_to_file(a, filename=os.path.join(r'../../Assistant_Archive/', re.sub(r'[^-\w]+', '_', a) + '.html'))
+    #print(re.sub(r'[^-\w]+', '_', a) + '.html')
