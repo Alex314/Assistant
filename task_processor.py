@@ -3,6 +3,7 @@ from queue import Empty
 import importlib.util
 from task import basic_tasks
 from time import sleep
+import os
 
 
 def run_function(out_queue, path, function_name, *args):
@@ -12,7 +13,6 @@ def run_function(out_queue, path, function_name, *args):
 
     ans = getattr(module, function_name)(*args)
     if str(type(ans)) == '<class \'generator\'>':
-        out_queue.put('generator output from {0}'.format(function_name))
         for a in ans:
             put_to_gui(out_queue, a)
     else:
@@ -30,9 +30,17 @@ class TaskProcessor:
         # self.processes = []
         self.comp = Queue()
         self.possible_tasks = basic_tasks()
-
         # Flag for closing
         self.active = True
+        self.initialize_form_file()
+
+    def initialize_form_file(self):
+        filename = os.path.join(r'../Assistant_Archive/', 'init_config.txt')
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
+                for line in f:
+                    print(line.rstrip())
+                    self.process_query(line.rstrip())
 
     def terminate(self):
         children = active_children()

@@ -71,7 +71,7 @@ def parse_links(adress, start_with='', beg=None):
     return ans
 
 
-def check_page(url, wait_sec=5):
+def check_page(url, wait_sec=60):
     directory = r'../Assistant_Archive/'
     filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', url) + '.html')
     if not os.path.exists(filename):
@@ -84,7 +84,7 @@ def check_page(url, wait_sec=5):
         sleep(wait_sec)
 
 
-def check_text_page(url, wait_sec=5):
+def check_text_page(url, wait_sec=60):
     directory = r'../Assistant_Archive/'
     filename = os.path.join(directory, re.sub(r'[^-\w]+', '_', url) + '.html')
     if not os.path.exists(filename):
@@ -110,9 +110,9 @@ if __name__ == '__main__':
     print(r1 == r2)'''
     # print('Total pages:', len(walk_site(adres)))
     a = r'https://github.com/Alex314/Assistant'
-    #save_page(a)
-    #print(compare_page_to_file(a))
+    # save_page(a)
+    # print(compare_page_to_file(a))
     for i in check_text_page(a):
         print(i)
     compare_text_page_to_file(a, filename=os.path.join(r'../../Assistant_Archive/', re.sub(r'[^-\w]+', '_', a) + '.html'))
-    #print(re.sub(r'[^-\w]+', '_', a) + '.html')
+    # print(re.sub(r'[^-\w]+', '_', a) + '.html')

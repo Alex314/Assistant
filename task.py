@@ -25,7 +25,7 @@ def basic_tasks():
                 'Список программ')]
     bt += [Task(r'([Зз]апусти(ть)?|[Rr]un) (.*)', 'Lib/os_basic.py', 'run_program',
                 lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],), "Запустить {}")]
-    bt += [Task(r'[Сс]писок команд|[Кк]оманды|[Cc]omands|[Cc]omand[s] list',
+    bt += [Task(r'[Сс]писок команд|[Кк]оманды|[Cc]ommands|[Cc]ommand[s] list',
                 'Lib/core_functions.py', 'get_command_list', lambda s: tuple(), 'Команды')]
     bt += [Task(r'[Сс]писок процессов|[Пп]роцессы|[Pp]rocess(es)?( list)?',
                 'Lib/core_functions.py', 'get_active_processes', lambda s: tuple(), 'Процессы')]
@@ -37,12 +37,10 @@ def basic_tasks():
                 'Lib/core_functions.py', 'restart', lambda s: tuple(), 'Перезапуск')]
     bt += [Task('[Ee]xit|[Cc]lose|[Вв]ыход|[Вв]ыйти|[Зз]акрыть',
                 'Lib/core_functions.py', 'close_app', lambda s: tuple(), 'Выход')]
-    bt += [Task(r'([Пп]роверять сайт по тексту|[Cc]heck (web)?site by text) (.*)',
-                'Lib/net.py', 'check_text_page',
+    bt += [Task(r'([Пп]роверять сайт по тексту|[Cc]heck (web)?site by text) (.*)', 'Lib/net.py', 'check_text_page',
                 lambda s: (re.fullmatch(r'([Пп]роверять сайт по тексту|[Cc]heck (web)?site by text) (.*)', s).groups()[2],),
                 'Проверять сайт по тексту {}')]
-    bt += [Task(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)',
-                'Lib/net.py', 'check_page',
+    bt += [Task(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)', 'Lib/net.py', 'check_page',
                 lambda s: (re.fullmatch(r'([Пп]роверять сайт|[Cc]heck (web)?site) (.*)', s).groups()[2],),
                 'Проверять сайт {}')]
 
