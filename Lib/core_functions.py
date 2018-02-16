@@ -1,4 +1,6 @@
 import os
+import keyboard
+import winsound
 
 
 def get_command_list():
@@ -7,6 +9,13 @@ def get_command_list():
 
 def get_active_processes():
     return 'exec', 'self.q_out.put(["Active processes:"] + [pr.name for pr in active_children()])'
+
+
+def bind_gui():
+    while True:
+        keyboard.wait('ctrl+shift+a')
+        winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
+        yield 'SIG_ICONIFY'
 
 
 def terminate_process_by_name(name):

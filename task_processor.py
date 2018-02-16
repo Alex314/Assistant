@@ -33,13 +33,13 @@ class TaskProcessor:
         # Flag for closing
         self.active = True
         self.initialize_form_file()
+        Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()), name='bind_GUI').start()
 
     def initialize_form_file(self):
         filename = os.path.join(r'../Assistant_Archive/', 'init_config.txt')
         if os.path.exists(filename):
             with open(filename, 'r') as f:
                 for line in f:
-                    print(line.rstrip())
                     self.process_query(line.rstrip())
 
     def terminate(self):

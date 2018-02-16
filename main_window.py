@@ -7,9 +7,10 @@ class MainWindow:
         self.master = master
         self.qin = qin
         self.qout = qout
+        self.active = True
 
-        master.minsize(100, 100)
-        master.protocol("WM_DELETE_WINDOW", self.on_exit)
+        self.master.minsize(100, 100)
+        self.master.protocol("WM_DELETE_WINDOW", self.iconify)
         self.text = tkinter.Text(master)
         self.field = tkinter.Entry(master, exportselection=0)
         self.field.bind("<Return>", lambda x: self.press())
@@ -31,12 +32,23 @@ class MainWindow:
             self.text.see(tkinter.END)
             self.qin.put(s)
 
+    def iconify(self):
+        if self.active:
+            self.master.withdraw()
+            self.active = False
+        else:
+            self.master.deiconify()
+            self.active = True
+
     def upd_output(self):
         try:
             while True:
                 s = self.qout.get(block=False)
-                self.present(s)
-                self.text.see(tkinter.END)
+                if s == "SIG_ICONIFY":
+                    self.iconify()
+                else:
+                    self.present(s)
+                    self.text.see(tkinter.END)
         except Empty:
             pass
         finally:
@@ -49,4 +61,3 @@ class MainWindow:
             self.present('')
         else:
             self.text.insert(tkinter.END, arg.__str__() + '\n')
-
