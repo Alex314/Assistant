@@ -55,7 +55,7 @@ class MainWindow:
             self.master.after(10, self.upd_output)
 
     def present(self, arg):
-        if type(arg) is type(list()):
+        if isinstance(arg, list):
             for i in arg:
                 self.present(i)
             self.present('')

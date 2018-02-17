@@ -99,5 +99,6 @@ class TaskProcessor:
         """
         for t in self.possible_tasks:
             if t.fit(query):
-                Process(target=run_function, args=(self.comp, t.file, t.func_name, *t.eval_p(query)), name=query).start()
+                Process(target=run_function, args=(self.comp, t.file, t.func_name, *t.eval_p(query)),
+                        name=query).start()
                 break
