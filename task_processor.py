@@ -1,12 +1,22 @@
+"""Processing of tasks, core management"""
+
+import os
+import importlib.util
+from time import sleep
 from multiprocessing import Process, Queue, active_children
 from queue import Empty
-import importlib.util
+
 from task import basic_tasks
-from time import sleep
-import os
 
 
-def run_function(out_queue, path, function_name, *args):
+def run_function(out_queue: Queue, path, function_name, *args):
+    """Import and run function from different python files
+
+    :param out_queue: Queue to put respond of function
+    :param path: Path to file which contains function
+    :param function_name: Name of function to run
+    :param args: Arguments to transfer to function
+    """
     spec = importlib.util.spec_from_file_location(function_name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -14,28 +24,34 @@ def run_function(out_queue, path, function_name, *args):
     ans = getattr(module, function_name)(*args)
     if str(type(ans)) == '<class \'generator\'>':
         for a in ans:
-            put_to_gui(out_queue, a)
+            out_queue.put(a)
     else:
-        put_to_gui(out_queue, ans)
-
-
-def put_to_gui(queue, arg):
-    queue.put(arg)
+        out_queue.put(ans)
 
 
 class TaskProcessor:
-    def __init__(self, q_in, q_out):
+    """Main object of Assistant core.
+
+    Process all tasks and responds. Execute task's respond when needed. Manage request and responds
+    """
+
+    def __init__(self, q_in: Queue, q_out: Queue):
+        """Initialize TaskProcessor
+
+        :param q_in: Queue to get input requests
+        :param q_out: Queue to put responds
+        """
         self.q_in = q_in
         self.q_out = q_out
-        # self.processes = []
         self.comp = Queue()
         self.possible_tasks = basic_tasks()
-        # Flag for closing
-        self.active = True
+        self.active = True  # Flag for closing
         self.initialize_form_file()
-        Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()), name='bind_GUI').start()
+        Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()),
+                name='bind_GUI').start()
 
     def initialize_form_file(self):
+        """Run tasks from config file"""
         filename = os.path.join(r'../Assistant_Archive/', 'init_config.txt')
         if os.path.exists(filename):
             with open(filename, 'r') as f:
@@ -43,12 +59,18 @@ class TaskProcessor:
                     self.process_query(line.rstrip())
 
     def terminate(self):
+        """Terminate children processes and stop"""
         children = active_children()
         for ch in children:
             ch.terminate()
         self.active = False
 
     def run(self):
+        """Main loop
+
+        Check input requests and process it.
+        Check responds, put them to self.q_out or execute
+        """
         while self.active:
             try:
                 while self.active:
@@ -71,6 +93,10 @@ class TaskProcessor:
             sleep(0.01)
 
     def process_query(self, query):
+        """Run function which fit query
+
+        :param query: str to process
+        """
         for t in self.possible_tasks:
             if t.fit(query):
                 Process(target=run_function, args=(self.comp, t.file, t.func_name, *t.eval_p(query)), name=query).start()
