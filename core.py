@@ -3,7 +3,7 @@
 import tkinter
 from multiprocessing import Process, Queue
 
-from main_window import MainWindow
+from View.main_window import MainWindow
 from task_processor import TaskProcessor
 
 

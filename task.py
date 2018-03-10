@@ -28,6 +28,11 @@ def eval_factorial(regex, s_input):
     return int(gr[0]),
 
 
+def eval_run_method(regex, s_input):
+    gr = re.fullmatch(regex, s_input).groups()
+    return gr[1], gr[0]
+
+
 def basic_tasks():
     """Predefined possible tasks for an assistant
 
@@ -37,6 +42,9 @@ def basic_tasks():
     bt += [Task(r'(\d+)!', 'Lib/factorial.py', 'factorial', lambda s: eval_factorial(r'(\d+)!', s), '{int>=0}!')]
     bt += [Task(r'[Сс]писок программ|([Ii]nstalled )?[Pp]rograms', 'Lib/os_basic.py', 'get_programs', lambda s: tuple(),
                 'Список программ')]
+    bt += [Task(r'[Rr]un method ([^\s]+) from ([^\s]+)', 'Lib/core_functions.py', 'run_method',
+                lambda s: eval_run_method(r'[Rr]un method ([^\s]+) from ([^\s]+)', s),
+                'Run method {method_name} from {filename}')]
     bt += [Task(r'([Зз]апусти(ть)?|[Rr]un) (.*)', 'Lib/os_basic.py', 'run_program',
                 lambda s: (re.fullmatch(r'([Зз]апусти(ть)?|[Rr]un) (.*)', s).groups()[2],), "Запустить {}")]
     bt += [Task(r'[Сс]писок команд|[Кк]оманды|[Cc]ommands|[Cc]ommand[s] list',

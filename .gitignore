@@ -6,8 +6,11 @@ __pycache__/
 #.idea
 .idea/
 
-#ATest
+#My files
 *Test.py
+personal_funcs.py
+*.txt
+*.html
 
 # C extensions
 *.so
