@@ -7,17 +7,22 @@ class ScrollableFrame:
     """
     def __init__(self, master):
         self.master = master
-        self.canvas = tk.Canvas(master, bg='green')
-        self.frame = tk.Frame(self.canvas)
+        self.canvas = tk.Canvas(master, bg='gray')
+        self.frame = tk.Frame(self.canvas, bg='gray')
+        self.frame.grid_columnconfigure(0, weight=1)
         self.myscrollbar = tk.Scrollbar(master, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.myscrollbar.set)
         self.myscrollbar.pack(side="right", fill="y")
         self.canvas.pack(expand=True, fill="both")
-        self.canvas.create_window((0, 0), window=self.frame)
-        self.frame.bind("<Configure>", self.configure)
+        self.canvas_frame = self.canvas.create_window((0, 0), window=self.frame)
+        self.canvas.bind("<Configure>", self.canvas_configure)
+        self.frame.bind("<Configure>", self.frame_configure)
 
-    def configure(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=event.width)
+    def canvas_configure(self, event):
+        self.canvas.itemconfig(self.canvas_frame, width=event.width)
+
+    def frame_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def present(self, obj, my=False):
         """Show object at frame
@@ -40,7 +45,7 @@ class Message:
         :param right -> bool: Show at right or left side
         """
         self.master = master
-        self.frame = tk.Frame(self.master, bg='orange' if right else 'blue', borderwidth=2)
+        self.frame = tk.Frame(self.master, borderwidth=2)
         self.frame.grid(sticky='NW' if right else 'NE', pady=1)
 
     def add_text(self, text):
