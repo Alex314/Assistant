@@ -17,11 +17,18 @@ def run_function(out_queue: Queue, path, function_name, *args):
     :param function_name: Name of function to run
     :param args: Arguments to transfer to function
     """
-    spec = importlib.util.spec_from_file_location(function_name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    ans = getattr(module, function_name)(*args)
+    try:
+        spec = importlib.util.spec_from_file_location(function_name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+    except Exception as e:
+        out_queue.put(('Exception during module loading', e))
+        return
+    try:
+        ans = getattr(module, function_name)(*args)
+    except Exception as e:
+        out_queue.put(('Exception during function execution', e))
+        return
     if str(type(ans)) == '<class \'generator\'>':
         for a in ans:
             out_queue.put(a)
@@ -47,8 +54,6 @@ class TaskProcessor:
         self.possible_tasks = basic_tasks()
         self.active = True  # Flag for closing
         self.initialize_form_file()
-        # Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()),
-        #         name='bind_GUI').start()
         Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'socket_activation', *tuple()),
                 name='socket_activation').start()
 
