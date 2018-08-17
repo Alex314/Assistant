@@ -1,8 +1,9 @@
 import os
-import keyboard
+#import keyboard
 import winsound
 import importlib.util
 import types
+import socket
 
 
 def run_method(filename, method_name):
@@ -14,12 +15,18 @@ def run_method(filename, method_name):
     :param method_name: Name of method to run
     :return: Generator with first 'started' mark and then outputs
     """
-    spec = importlib.util.spec_from_file_location(method_name, filename)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    # yield 'run_method started'
+    try:
+        spec = importlib.util.spec_from_file_location(method_name, filename)
+        module = importlib.util.module_from_spec(spec)
+        # yield 'module defined'
+        spec.loader.exec_module(module)
+        # yield 'exec_module ended'
 
-    ans = getattr(module, method_name)()
-    yield str(method_name) + ' started'
+        yield str(method_name) + ' started'
+        ans = getattr(module, method_name)()
+    except Exception as e:
+        ans = ['Exception:', e]
     if isinstance(ans, types.GeneratorType):
         for a in ans:
             yield a
@@ -44,7 +51,8 @@ def get_active_processes():
     return 'exec', 'self.q_out.put(["Active processes:"] + [pr.name for pr in active_children()])'
 
 
-def bind_gui():
+# DEPRECATED
+'''def bind_gui():
     """Wait for pressing Ctrl+Shift+a to send signal to iconify window
 
     :return: Generator with 'SIG_ICONIFY'
@@ -53,6 +61,34 @@ def bind_gui():
         keyboard.wait('ctrl+shift+a')
         winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
         yield 'SIG_ICONIFY'
+'''
+
+
+def socket_activation():
+    """Wait `b'show'` to socket localhost:8887 then send `'SIG_DEICONIFY'`
+
+    :return: Generator with 'SIG_DEICONIFY'
+    """
+    a = socket.socket()
+    a.bind(('localhost', 8887))
+    a.listen(5)
+    while True:
+        ns, adrr = a.accept()
+        # print(adrr, ns, sep='\n')
+        # print('Connection opened')
+        ns.settimeout(5)
+        data = ns.recv(256)
+        while len(data) > 0:
+            # data = str(data)
+            commands = data.split(b'\n')
+            for c in commands:
+                if len(c) > 0:
+                    # print('Received command:', c)
+                    if c == b'show':
+                        winsound.PlaySound('Notify.wav', winsound.SND_FILENAME)
+                        yield 'SIG_DEICONIFY'
+            data = ns.recv(256)
+        # print('Connection closed')
 
 
 def terminate_process_by_name(name):

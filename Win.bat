@@ -1,1 +1,1 @@
-start pythonw core.py
+start pythonw Assistant_socket_starter.py

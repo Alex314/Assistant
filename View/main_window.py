@@ -46,12 +46,16 @@ class MainWindow:
             self.qin.put(s)
 
     def iconify(self):
-        """Iconify or deiconify window (hide it)
+        """Iconify window if need (hide it)
         """
         if self.active:
             self.master.withdraw()
             self.active = False
-        else:
+
+    def deiconify(self):
+        """Deiconify window if hidden (represent it)
+        """
+        if not self.active:
             self.master.deiconify()
             self.active = True
 
@@ -63,6 +67,8 @@ class MainWindow:
                 s = self.qout.get(block=False)
                 if s == "SIG_ICONIFY":
                     self.iconify()
+                elif s == 'SIG_DEICONIFY':
+                    self.deiconify()
                 else:
                     self.present(s)
         except Empty:

@@ -47,8 +47,10 @@ class TaskProcessor:
         self.possible_tasks = basic_tasks()
         self.active = True  # Flag for closing
         self.initialize_form_file()
-        Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()),
-                name='bind_GUI').start()
+        # Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'bind_gui', *tuple()),
+        #         name='bind_GUI').start()
+        Process(target=run_function, args=(self.comp, 'Lib/core_functions.py', 'socket_activation', *tuple()),
+                name='socket_activation').start()
 
     def initialize_form_file(self):
         """Run tasks from config file"""
